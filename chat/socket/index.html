@@ -18,9 +18,11 @@
                 console.log("connected to server");
                 socket.emit('join',"Hello from client");
             });
+            
             socket.on('toall', function (data) {
                 $('#future').htlm(data);
             });
+            
             $('form').submit(function (action) {
                 action.preventDefault();
                 var msg = $('#chat_input').val();

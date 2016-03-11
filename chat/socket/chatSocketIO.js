@@ -3,8 +3,10 @@ var fs = require('fs');
 var url = require('url');
 var nodeCache = require('node-cache');
 var serverCache = new nodeCache({errorMissing: true});
-var clientForm = "index.html";
+var clientForm = "/index.html";
 var chatMap = {};
+var express = require('express');
+var app = express();
 //var io = require('socket.io');
 
 
@@ -44,6 +46,7 @@ function listenHandler(url, res) {
     console.log("the hashmap:"+chatMap.toString());
 }
 
+/*
 var httpServer = http.createServer(function(req, res) {
     var url = require('url').parse(req.url, true);
     console.log("the URL is:\n"+url.pathname);
@@ -58,7 +61,17 @@ var httpServer = http.createServer(function(req, res) {
     });
 }).listen(process.argv[2]);
 
-var io = require('socket.io').listen(httpServer);
+*/
+
+var httpServer = http.createServer(app);
+var io = require('socket.io')(httpServer);
+
+app.use(express.static(__dirname));
+app.get('/', function(req, res, next) {
+    res.sendFile(__dirname + clientForm);
+})
+
+httpServer.listen(process.argv[2]);
 
 io.on('connection', function(client) {
     console.log("cilent connected");
