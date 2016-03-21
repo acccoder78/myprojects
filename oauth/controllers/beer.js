@@ -7,7 +7,7 @@ exports.addBeer = function(req, res) {
     beer.type = req.body.type;
     beer.quantity = req.body.quantity;
     
-    Beer.save(function(err) {
+    beer.save(function(err) {
         if (err) return res.send(err);
         
         res.json({message: "Beer '"+ beer.name + "' added to the locker!"});
@@ -39,7 +39,7 @@ exports.getBeerByName = function(req, res) {
 }
 
 exports.putBeer = function(req, res) {
-    Beer.find(req.params.beer_id, function(err, beer) {
+    Beer.findById(req.params.beer_id, function(err, beer) {
         if (err) return res.send(err);
         
         beer.quantity = req.body.quantity;

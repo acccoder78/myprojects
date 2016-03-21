@@ -6,6 +6,7 @@ var router = express.Router();
 var Beer = require('./models/beer');
 var bodyParser = require('body-parser');
 var beerController = require('./controllers/beer');
+var userController = require('./controllers/user');
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -29,6 +30,11 @@ router.route('/beers/:beer_id')
     .put(beerController.putBeer)
     .delete(beerController.deleteBeer);
 
+router.route('/users')
+    .post(userController.addUsers)
+    .get(userController.getUsers)
+    .delete(userController.removeUser);
+    
 app.use('/api', router);
 
 app.listen(port);

@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
 
 var userSchema = new mongoose.Schema({
-    userName: {
+    username: {
         type: String,
         unique: true,
         required: true
@@ -30,4 +30,12 @@ userSchema.pre('save', function(callback) {
     });
 });
 
-module.exports = mongoose.model('user', userSchema);
+userSchema.methods.verifyUser = function(password, callback) {
+    bcrypt.compare(password, this.password, function(err, isMatch) {
+        if (err) return callback(err);
+        
+        callback(null, isMatch);
+    });
+}
+
+module.exports = mongoose.model('User', userSchema);
