@@ -36,6 +36,6 @@ userSchema.methods.verifyUser = function(password, callback) {
         
         callback(null, isMatch);
     });
-}
+};
 
 module.exports = mongoose.model('User', userSchema);

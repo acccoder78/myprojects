@@ -11,7 +11,7 @@ exports.addUsers = function(req, res) {
         
         res.json({message: "New user:" + user.username + " added to the beer locker!"});
     });
-}
+};
 
 exports.getUsers = function(req, res) {
     User.find(function(err, users) {
@@ -19,7 +19,7 @@ exports.getUsers = function(req, res) {
         
         res.json(users);
     });
-}
+};
 
 exports.removeUser = function(req, res) {
     if(req.body.username === undefined) 
@@ -30,4 +30,4 @@ exports.removeUser = function(req, res) {
     
         res.json({message: "The user: " + req.body.username + " removed from beer locker!"});
     });
-}
+};

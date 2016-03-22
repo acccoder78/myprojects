@@ -13,7 +13,7 @@ exports.addBeer = function(req, res) {
         
         res.json({message: "Beer '"+ beer.name + "' added to the locker!"});
     });
-}
+};
 
 exports.getBeers = function(req, res) {
     Beer.find({userId: req.user._id}, function(err, beers) {
@@ -21,7 +21,7 @@ exports.getBeers = function(req, res) {
         
         res.json(beers);
     });
-}
+};
 
 exports.getBeerById = function(req, res) {
     Beer.findById({userId: req.user._id, _id: req.params.beer_id}, function(err, beer) {
@@ -29,7 +29,7 @@ exports.getBeerById = function(req, res) {
         
         res.json(beer);
     });
-}
+};
 
 exports.getBeerByName = function(req, res) {
     Beer.findById({userId: req.user._id, name: req.params.beer_name}, function(err, beer) {
@@ -37,7 +37,7 @@ exports.getBeerByName = function(req, res) {
         
         res.json(beer);
     });
-}
+};
 
 /*
 //option 1 of implementing quantity update function
@@ -65,7 +65,7 @@ exports.putBeer = function(req, res) {
         
         res.json(beer);
     });
-}
+};
 
 exports.deleteBeer = function(req, res) {
     Beer.find({userId: req.user._id, _id: req.params.beer_id}, function(err, beer) {
@@ -87,7 +87,7 @@ exports.deleteBeer = function(req, res) {
         }
         res.json({message: msg});
     });
-}
+};
 
 exports.deleteAll = function(req, res) {
     console.log("user: " + req.user._id);
@@ -97,4 +97,4 @@ exports.deleteAll = function(req, res) {
         
         res.json({message: "All beers for "+ req.user._id + " removed from locker!"});
     });
-}
+};
