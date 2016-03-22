@@ -6,6 +6,7 @@ exports.addBeer = function(req, res) {
     beer.name = req.body.name;
     beer.type = req.body.type;
     beer.quantity = req.body.quantity;
+    beer.userId = req.user._id;
     
     beer.save(function(err) {
         if (err) return res.send(err);
@@ -15,7 +16,7 @@ exports.addBeer = function(req, res) {
 }
 
 exports.getBeers = function(req, res) {
-    Beer.find(function(err, beers) {
+    Beer.find({userId: req.user._id}, function(err, beers) {
         if (err) return res.send(err);
         
         res.json(beers);
@@ -23,7 +24,7 @@ exports.getBeers = function(req, res) {
 }
 
 exports.getBeerById = function(req, res) {
-    Beer.findById(req.params.beer_id, function(err, beer) {
+    Beer.findById({userId: req.user._id, _id: req.params.beer_id}, function(err, beer) {
         if (err) return res.send(err);
         
         res.json(beer);
@@ -31,15 +32,18 @@ exports.getBeerById = function(req, res) {
 }
 
 exports.getBeerByName = function(req, res) {
-    Beer.findById({name: req.params.beer_name}, function(err, beer) {
+    Beer.findById({userId: req.user._id, name: req.params.beer_name}, function(err, beer) {
         if (err) return res.send(err);
         
         res.json(beer);
     });
 }
 
+/*
+//option 1 of implementing quantity update function
+
 exports.putBeer = function(req, res) {
-    Beer.findById(req.params.beer_id, function(err, beer) {
+    Beer.findById({userId: req.user._id, _id: req.params.beer_id}, function(err, beer) {
         if (err) return res.send(err);
         
         beer.quantity = req.body.quantity;
@@ -51,15 +55,28 @@ exports.putBeer = function(req, res) {
         });
     });
 }
+*/
+
+//option 2 of implementing quantity update function
+
+exports.putBeer = function(req, res) {
+    Beer.update({userId: req.user._id, _id: req.params.beer_id}, {quantity: req.body.quantity}, function(err, beer) {
+        if (err) return res.send(err);
+        
+        res.json(beer);
+    });
+}
 
 exports.deleteBeer = function(req, res) {
-    Beer.findById(req.params.beer_id, function(err, beer) {
+    Beer.find({userId: req.user._id, _id: req.params.beer_id}, function(err, beer) {
         if (err) return res.send(err);
         
         var msg = "";
         
+        console.log("user: "+req.user._id+"; beer: "+beer.name+"; quantity: "+beer.quantity);
+        
         if ((beer.quantity === undefined) || (beer.quantity <= 0)) {
-            Beer.findByIdAndRemove(req.params.beer_id, function(err) {
+            Beer.remove({_id: req.params.beer_id}, function(err) {
                 if (err) return res.send(err);
             });
             
@@ -69,5 +86,15 @@ exports.deleteBeer = function(req, res) {
             msg = "Beer '" + beer.name + "' not removed from locker as its not empty yet!";
         }
         res.json({message: msg});
+    });
+}
+
+exports.deleteAll = function(req, res) {
+    console.log("user: " + req.user._id);
+        
+    Beer.remove({userId: req.user._id}, function(err) {
+        if (err) return res.send(err);
+        
+        res.json({message: "All beers for "+ req.user._id + " removed from locker!"});
     });
 }
