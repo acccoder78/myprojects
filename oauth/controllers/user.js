@@ -22,7 +22,7 @@ exports.getUsers = function(req, res) {
 };
 
 exports.removeUser = function(req, res) {
-    if(req.body.username === undefined) 
+    if (req.body.username === undefined) 
         return res.json({message: "Please enter a valid user to remove!"});
     
     User.remove({username: req.body.username}, function(err) {

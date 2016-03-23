@@ -9,6 +9,7 @@ var beerController = require('./controllers/beer');
 var userController = require('./controllers/user');
 var passport = require('passport');
 var authController = require('./controllers/auth');
+var clientController = require('./controllers/client');
 
 mongoose.connect('mongodb://localhost:27017/beerlocker');
 
@@ -32,19 +33,21 @@ router.route('/beers')
 router.route('/beers/:beer_id')
     .get(authController.isAuthenticated, beerController.getBeerById)
     .put(authController.isAuthenticated, beerController.putBeer)
-    .delete(authController.isAuthenticated, beerController.deleteEmptyBeer);
-    
-router.route('/beers/remove/:beer_id')
     .delete(authController.isAuthenticated, beerController.deleteBeer);
-
-router.route('/all/beers')
+    
+router.route('/beers/all')
     .delete(authController.isAuthenticated, beerController.deleteAll);
 
 router.route('/users')
     .post(userController.addUsers)
-    .get(userController.getUsers)
+    .get(authController.isAuthenticated, userController.getUsers)
     .delete(authController.isAuthenticated, userController.removeUser);
     
+router.route('/clients')
+    .post(userController.isAuthenticated, clientController.postClient)
+    .get(userController.isAuthenticated, clientController.getClients);
+    
+
 app.use('/api', router);
 
 app.listen(port);
