@@ -67,7 +67,7 @@ exports.putBeer = function(req, res) {
     });
 };
 
-exports.deleteBeer = function(req, res) {
+exports.deleteEmptyBeer = function(req, res) {
     console.log("user: "+req.user._id+"; beer_id: "+req.params.beer_id);
     
     Beer.find({_id: req.params.beer_id, userId: req.user._id}, function(err, beers) {
@@ -75,9 +75,9 @@ exports.deleteBeer = function(req, res) {
         
         var msg = "";
         
-        //console.log("user: "+req.user._id+"; beer: "+beers);
+        console.log("user: "+req.user._id+"; beer: "+beers.length);
         
-        if (null === beers) {
+        if (!beers.length) {
             msg = "The specified beer doesn\'t exist in the locker!";
         }
         else if ((!beers[0].quantity) || (beers[0].quantity <= 0)) {
@@ -94,8 +94,32 @@ exports.deleteBeer = function(req, res) {
     });
 };
 
+exports.deleteBeer = function(req, res) {
+    console.log("user: "+req.user._id+"; beer_id: "+req.params.beer_id);
+    
+    Beer.find({_id: req.params.beer_id, userId: req.user._id}, function(err, beers) {
+        if (err) return res.send(err);
+        
+        var msg = "";
+        
+        console.log("user: "+req.user._id+"; beer: "+beers.length);
+        
+        if (!beers.length) {
+            msg = "The specified beer doesn\'t exist in the locker!";
+        }
+        else {
+            Beer.remove({_id: req.params.beer_id}, function(err) {
+                if (err) return res.send(err);
+            });
+            
+            msg = "Beer '" + beers[0].name + "' has been removed from locker!";
+        }
+        res.json({message: msg});
+    });
+};
+
 exports.deleteAll = function(req, res) {
-    console.log("user: " + req.user._id);
+    console.log("**user: " + req.user._id);
         
     Beer.remove({userId: req.user._id}, function(err) {
         if (err) return res.send(err);

@@ -32,9 +32,12 @@ router.route('/beers')
 router.route('/beers/:beer_id')
     .get(authController.isAuthenticated, beerController.getBeerById)
     .put(authController.isAuthenticated, beerController.putBeer)
-    .delete(authController.isAuthenticated, beerController.deleteBeer);
+    .delete(authController.isAuthenticated, beerController.deleteEmptyBeer);
     
-router.route('/beers/all')
+router.route('/beers/remove/:beer_id')
+    .delete(authController.isAuthenticated, beerController.deleteBeer);
+
+router.route('/all/beers')
     .delete(authController.isAuthenticated, beerController.deleteAll);
 
 router.route('/users')
