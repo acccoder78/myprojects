@@ -11,37 +11,31 @@ var ClientSchema = new mongoose.Schema({
     
 ClientSchema.pre('save', function(callback) {
     var client = this;
+
+    if ((!client.isModified('id')) || (!client.isModified('secret'))) return callback();
     
-    if ((!client.isModified('id')) || (!client.isModified('secret'))) callback();
-    
-    bcrypt.getSalt(5, function(err, salt) {
+    bcrypt.genSalt(5, function(err, salt) {
         if (err) return callback(err);
         
-        switch (client) {
-            case client.isModified('id'):
-                // code
-                bcrypt.hash(client.id, salt, null, function(err, hash) {
-                    if (err) return callback(err);
-                    
-                    client.id = hash;
-                    callback();
-                });
-                break;
-
-            case client.isModified('secret'):
-                // code
-                bcrypt.hash(client.secret, salt, null, function(err, hash) {
-                    if (err) return callback(err);
-                    
-                    client.secret = hash;
-                    callback();
-                });
-                break;
-            
-            default:
-                // code
+        if (client.isModified('id')) {
+            bcrypt.hash(client.id, salt, null, function(err, hash) {
+                if (err) return callback(err);
+                
+                client.id = hash;
                 callback();
+            });
         }
+
+        if (client.isModified('secret')) {
+            bcrypt.hash(client.secret, salt, null, function(err, hash) {
+                if (err) return callback(err);
+                
+                client.secret = hash;
+                callback();
+            });
+        }
+
+//       return callback();
     });
 });
     

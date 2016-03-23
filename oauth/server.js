@@ -44,8 +44,8 @@ router.route('/users')
     .delete(authController.isAuthenticated, userController.removeUser);
     
 router.route('/clients')
-    .post(userController.isAuthenticated, clientController.postClient)
-    .get(userController.isAuthenticated, clientController.getClients);
+    .post(authController.isAuthenticated, clientController.addClient)
+    .get(authController.isAuthenticated, clientController.getClients);
     
 
 app.use('/api', router);
