@@ -26,8 +26,8 @@ router.route('/beers')
     .post(authController.isAuthenticated, beerController.addBeer)
     .get(authController.isAuthenticated, beerController.getBeers);
 
-router.route('/beers/:beer_name')
-    .get(authController.isAuthenticated, beerController.getBeerByName);
+//router.route('/beers/:beer_name')
+  //  .get(authController.isAuthenticated, beerController.getBeerByName);
 
 router.route('/beers/:beer_id')
     .get(authController.isAuthenticated, beerController.getBeerById)
@@ -35,12 +35,11 @@ router.route('/beers/:beer_id')
     .delete(authController.isAuthenticated, beerController.deleteBeer);
     
 router.route('/beers/all')
-    .get(authController.isAuthenticated, beerController.getBeers)
     .delete(authController.isAuthenticated, beerController.deleteAll);
 
 router.route('/users')
     .post(userController.addUsers)
-    .get(authController.isAuthenticated, userController.getUsers)
+    .get(userController.getUsers)
     .delete(authController.isAuthenticated, userController.removeUser);
     
 app.use('/api', router);
