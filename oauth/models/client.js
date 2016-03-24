@@ -8,7 +8,7 @@ var ClientSchema = new mongoose.Schema({
     userId: { type: String, required: true }
 });
 
-    
+/*    
 ClientSchema.pre('save', function(callback) {
     var client = this;
 
@@ -17,12 +17,15 @@ ClientSchema.pre('save', function(callback) {
     bcrypt.genSalt(5, function(err, salt) {
         if (err) return callback(err);
         
+        console.log("generated salt");
+        
         if (client.isModified('id')) {
             bcrypt.hash(client.id, salt, null, function(err, hash) {
                 if (err) return callback(err);
                 
                 client.id = hash;
-                callback();
+                
+                console.log("hashed the id");
             });
         }
 
@@ -31,12 +34,14 @@ ClientSchema.pre('save', function(callback) {
                 if (err) return callback(err);
                 
                 client.secret = hash;
-                callback();
+                
+                console.log("hashed the secret");
             });
         }
 
-//       return callback();
+       callback();
     });
 });
-    
+*/
+
 module.exports = mongoose.model('Client', ClientSchema);
