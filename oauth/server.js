@@ -10,11 +10,21 @@ var userController = require('./controllers/user');
 var passport = require('passport');
 var authController = require('./controllers/auth');
 var clientController = require('./controllers/client');
+var ejs = require('ejs');
+var session = require('express-session');
+
+app.set('view engine', 'ejs');
 
 mongoose.connect('mongodb://localhost:27017/beerlocker');
 
 app.use(bodyParser.urlencoded({
     extended: true
+}));
+
+app.use(session({
+    secret: 'super secret session key',
+    saveUninitialized: true,
+    resave: true
 }));
 
 app.use(passport.initialize());
