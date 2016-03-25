@@ -3,11 +3,12 @@ var Client = require('../models/client');
 var Code = require('../models/code');
 var Token = require('../models/token');
 var User = require('../models/user');
+var uid = require('uid');
 
 var server = oauth2.createServer();
 
 server.serializeClient(function(client, callback) {
-    return callback(null, client.id);
+    return callback(null, client._id);
 });
 
 server.deserializeClient(function(id, callback) {
@@ -37,9 +38,15 @@ server.exchange(oauth2.exchange.code(function(client, code, redirectUri, callbac
     Code.findOne({ value: code }, function(err, authCode) {
         if (err) return callback(err);
         
+        console.log("we got the auth code:"+code);
+        
         if (!authCode) return callback(null, false);
         
+        console.log("the auth code is not null and matched the cliendid:"+authCode.clientId);
+        
         if (client._id.toString() !== authCode.clientId) return callback(null, false);
+        
+        console.log("matched the redirectUri:"+authCode.redirectUri);
         
         if (redirectUri !== authCode.redirectUri) return callback(null, false);
         
@@ -73,3 +80,15 @@ exports.authorization = [
         res.render('dialog', { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client});
     }
 ]
+
+exports.decision = [
+    server.decision(function(req, callback) {
+        return callback(null, { scope: req.scope} )
+    })
+]
+
+exports.token = [
+    server.token(),
+    server.errorHandler()
+]
+

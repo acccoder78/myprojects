@@ -12,6 +12,8 @@ var authController = require('./controllers/auth');
 var clientController = require('./controllers/client');
 var ejs = require('ejs');
 var session = require('express-session');
+var oauth2Controller = require('./controllers/oauth2');
+var cookieParser = require('cookie-parser');
 
 app.set('view engine', 'ejs');
 
@@ -20,6 +22,8 @@ mongoose.connect('mongodb://localhost:27017/beerlocker');
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+app.use(cookieParser());
 
 app.use(session({
     secret: 'super secret session key',
@@ -57,6 +61,12 @@ router.route('/clients')
     .post(authController.isAuthenticated, clientController.addClient)
     .get(authController.isAuthenticated, clientController.getClients);
     
+router.route('/oauth2/authorize')
+    .get(authController.isAuthenticated, oauth2Controller.authorization)
+    .post(authController.isAuthenticated, oauth2Controller.decision);
+    
+router.route('/oauth2/token')
+    .post(authController.isAuthenticated, oauth2Controller.token);
 
 app.use('/api', router);
 
